@@ -1,3 +1,5 @@
+'use strict';
+
 const {importTwee,} = require('./importTwee');
 const {exportTwee,} = require('./exportTwee');
 const {importXml,} = require('./importXml');
