@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @param {IStory} story
+ * @return {string}
+ */
 function exportTwee(story) {
     return [
         exportTitle(story),
@@ -9,10 +13,14 @@ function exportTwee(story) {
     ].join('\n\n');
 }
 
+/**
+ * @param {IPassage} passage
+ * @return {string}
+ */
 function exportTweePassage(passage) {
     let title = `::${passage.starting ? 'Start' : passage.title}`;
     if (passage.tags && passage.tags.length) {
-        title += ` [${passage.tags.join()}]`;
+        title += ` [${passage.tags.join(' ')}]`;
     }
 
     if (passage.position) {
@@ -22,6 +30,10 @@ function exportTweePassage(passage) {
     return title + '\n' + passage.text; // eslint-disable-line prefer-template
 }
 
+/**
+ * @param {IStory} story
+ * @return {string}
+ */
 function exportStyle(story) {
     return exportTweePassage({
         title: 'Stylesheet',
@@ -30,6 +42,10 @@ function exportStyle(story) {
     });
 }
 
+/**
+ * @param {IStory} story
+ * @return {string}
+ */
 function exportScript(story) {
     return exportTweePassage({
         title: 'Script',
@@ -38,6 +54,10 @@ function exportScript(story) {
     });
 }
 
+/**
+ * @param {IStory} story
+ * @return {string}
+ */
 function exportTitle(story) {
     return exportTweePassage({
         title: 'StoryTitle',

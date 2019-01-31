@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @param {string} storyString
+ * @return {Partial<IStory>}
+ */
 function importTwee(storyString) {
     const passages = storyString.trim().split(/\n\n::/mg);
 
@@ -37,6 +41,10 @@ function importTwee(storyString) {
     return story;
 }
 
+/**
+ * @param {string} passageString
+ * @return Partial<IPassage>
+ */
 function parsePassageString(passageString) {
     const passage = {
         tags: [],
