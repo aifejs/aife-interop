@@ -62,6 +62,11 @@ function exportTitle(story) {
     return exportTweePassage({
         title: 'StoryTitle',
         text: story.title,
+        tags: [
+            `ifid-${story.ifid}`,
+            `story-format-${story.format}`,
+            `format-version-${story.formatVer}`,
+        ],
     });
 }
 

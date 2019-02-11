@@ -4,7 +4,7 @@ const test = require('ava');
 const {importTwee,} = require('../src/importTwee');
 
 const storyFixture = `
-::StoryTitle
+::StoryTitle [ifid-some_unique_uuid story-format-SugarCube format-version-2.28.2]
 My sad story
 
 ::Start [start another-tag] <100,200>
@@ -30,6 +30,9 @@ test('importTwee', async (t) => {
     t.is(story.title, 'My sad story');
     t.is(story.styleSheet, 'a { color: red; }');
     t.is(story.script, 'alert(123);');
+    t.is(story.format, 'SugarCube');
+    t.is(story.formatVer, '2.28.2');
+    t.is(story.ifid, 'some_unique_uuid');
 
     const passage = story.passages[0];
     t.pass(passage.starting);

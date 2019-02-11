@@ -1,11 +1,15 @@
-interface IStory {
-    title: string,
+interface IStoryMeta {
     ifid: string,
+    format: string,
+    formatVer: string;
+}
+
+interface IStory extends IStoryMeta {
+    title: string,
     passages: IPassage[],
     styleSheet: string,
     script: string,
     lastEdit: Date | number,
-    format: string,
 }
 
 interface IPassagePosition {

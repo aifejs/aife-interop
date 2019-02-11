@@ -1,6 +1,32 @@
 'use strict';
 
 /**
+ * @param {IPassage} passage
+ * @return {IStoryMeta}
+ */
+function extractMetaFromStoryTitle(passage) {
+    const meta = passage.tags.reduce((/** IStoryMeta */acc, tag) => {
+        if (tag.startsWith('ifid-')) {
+            acc.ifid = tag.replace('ifid-', '');
+        }
+
+        if (tag.startsWith('story-format-')) {
+            acc.format = tag.replace('story-format-', '');
+        }
+
+        if (tag.startsWith('format-version-')) {
+            acc.formatVer = tag.replace('format-version-', '');
+        }
+
+        return acc;
+    }, {
+        title: passage.text, // sic!
+    });
+
+    return meta;
+}
+
+/**
  * @param {string} storyString
  * @return {Partial<IStory>}
  */
@@ -8,11 +34,11 @@ function importTwee(storyString) {
     const passages = storyString.trim().split(/\n\n::/mg);
 
     const story = passages.reduce(
-        (storyProgress, passageString, index) => {
+        (/** {Partial<IStory>} */storyProgress, passageString, index) => {
             const passage = parsePassageString(passageString.trim());
 
             if (passage.title === 'StoryTitle') {
-                storyProgress.title = passage.text;
+                Object.assign(storyProgress, extractMetaFromStoryTitle(passage));
             } else if (passage.tags.includes('stylesheet')) {
                 storyProgress.styleSheet += passage.text + '\n'; // eslint-disable-line prefer-template
             } else if (passage.tags.includes('script')) {
