@@ -82,7 +82,7 @@ function parsePassageString(passageString) {
     // gradually removing pieces until only title remains
 
     titleLine = titleLine
-        .replace(/( <\d+,\d+>)/, (match) => {
+        .replace(/( <-?\d+(\.\d+)?,-?\d+(\.\d+)?>)/, (match) => {
             const [x, y,] = match.replace(/(<|>)/, '').split(',').map(parseFloat);
             passage.position = {
                 x,
