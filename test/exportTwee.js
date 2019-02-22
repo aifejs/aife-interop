@@ -25,7 +25,7 @@ Actually, forget that. I'm tired.`,
     ],
 };
 
-test(async (t) => {
+test('exportTwee', async (t) => {
     const twee = exportTwee(storyFixture);
 
     t.truthy(twee);
