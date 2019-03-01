@@ -1,6 +1,7 @@
 'use strict';
 
 /**
+ * @deprecated
  * @param {IPassage} passage
  * @return {IStoryMeta}
  */
@@ -23,6 +24,48 @@ function extractMetaFromStoryTitle(passage) {
         title: passage.text, // sic!
     });
 
+    if (Object.keys(meta).length > 1) {
+        console.warn('Using StoryTitle tags to pass metadata is deprecated, use StorySettings');
+    }
+
+    return meta;
+}
+
+/**
+ * @param {IPassage} passage
+ * @return {IStoryMeta}
+ */
+function extractMetaFromStorySettings(passage) {
+    const meta = passage.text.split(/\s*\n\s*/).reduce((/** IStoryMeta */acc, line) => {
+        if (line !== '') {
+            if (line.startsWith('ifid:')) {
+                acc.ifid = line.replace('ifid:', '');
+            }
+
+            if (line.startsWith('story-format:')) {
+                acc.format = line.replace('story-format:', '');
+            }
+
+            if (line.startsWith('format-version:')) {
+                acc.formatVer = line.replace('format-version:', '');
+            }
+
+            if (line.startsWith('tag-colors:')) {
+                let tagColors;
+                try {
+                    tagColors = JSON.parse(line.replace('tag-colors:', ''));
+                } catch (e) {
+                    console.warn('Failed to parse tag colors:', e.message);
+                    tagColors = {};
+                }
+
+                acc.tagColors = tagColors;
+            }
+        }
+
+        return acc;
+    }, {});
+
     return meta;
 }
 
@@ -39,6 +82,8 @@ function importTwee(storyString) {
 
             if (passage.title === 'StoryTitle') {
                 Object.assign(storyProgress, extractMetaFromStoryTitle(passage));
+            } else if (passage.title === 'StorySettings') {
+                Object.assign(storyProgress, extractMetaFromStorySettings(passage));
             } else if (passage.tags.includes('stylesheet')) {
                 storyProgress.styleSheet += passage.text + '\n'; // eslint-disable-line prefer-template
             } else if (passage.tags.includes('script')) {

@@ -2,6 +2,7 @@ interface IStoryMeta {
     ifid: string,
     format: string,
     formatVer: string;
+    tagColors: object;
 }
 
 interface IStory extends IStoryMeta {

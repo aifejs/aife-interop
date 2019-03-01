@@ -7,6 +7,7 @@
 function exportTwee(story) {
     return [
         exportTitle(story),
+        exportStorySettings(story),
         ...story.passages.map(exportTweePassage),
         exportStyle(story),
         exportScript(story),
@@ -62,11 +63,31 @@ function exportTitle(story) {
     return exportTweePassage({
         title: 'StoryTitle',
         text: story.title,
-        tags: [
-            `ifid-${story.ifid}`,
-            `story-format-${story.format}`,
-            `format-version-${story.formatVer}`,
-        ],
+    });
+}
+
+/**
+ * @param {IStory} story
+ * @return {string}
+ */
+function exportStorySettings(story) {
+    const textCollector = [];
+    if (story.ifid) {
+        textCollector.push(`ifid:${story.ifid}`);
+    }
+    if (story.format) {
+        textCollector.push(`story-format:${story.format}`);
+    }
+    if (story.formatVer) {
+        textCollector.push(`story-version:${story.formatVer}`);
+    }
+    if (story.tagColors && Object.keys(story.tagColors).length > 0) {
+        textCollector.push(`tag-colors:${JSON.stringify(story.tagColors)}`);
+    }
+
+    return exportTweePassage({
+        title: 'StorySettings',
+        text: textCollector.join('\n'),
     });
 }
 
