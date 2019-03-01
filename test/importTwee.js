@@ -4,8 +4,14 @@ const test = require('ava');
 const {importTwee,} = require('../src/importTwee');
 
 const storyFixture = `
-::StoryTitle [ifid-some_unique_uuid story-format-SugarCube format-version-2.28.2]
+::StoryTitle
 My sad story
+
+::StorySettings
+ifid:some_unique_uuid
+story-format:SugarCube
+format-version:2.28.2
+tag-colors:{"bookmark":"green"}
 
 ::Start [start another-tag] <100,200>
 
@@ -36,6 +42,7 @@ test('importTwee', async (t) => {
     t.is(story.format, 'SugarCube');
     t.is(story.formatVer, '2.28.2');
     t.is(story.ifid, 'some_unique_uuid');
+    t.deepEqual(story.tagColors, {bookmark: 'green',});
 
     const passage1 = story.passages[0];
     t.pass(passage1.starting);

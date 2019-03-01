@@ -9,6 +9,9 @@ const storyFixture = {
     format: 'SugarCube',
     formatVer: '2.28.2',
     ifid: 'some_unique_uuid',
+    tagColors: {
+        bookmark: 'green',
+    },
     styleSheet: 'a { color: red; }',
     script: 'alert(123);',
     passages: [
@@ -33,6 +36,9 @@ test('exportTwee', async (t) => {
     t.true(twee.includes('::Script [script]\nalert(123);'));
     t.true(twee.includes('::Start [tag another-tag] <100,200>'));
     t.true(
-        twee.includes('::StoryTitle [ifid-some_unique_uuid story-format-SugarCube format-version-2.28.2]\nMy sad story')
+        twee.includes('::StoryTitle\nMy sad story')
+    );
+    t.true(
+        twee.includes('::StorySettings\nifid:some_unique_uuid')
     );
 });
