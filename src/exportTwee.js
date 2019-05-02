@@ -79,7 +79,7 @@ function exportStorySettings(story) {
         textCollector.push(`story-format:${story.format}`);
     }
     if (story.formatVer) {
-        textCollector.push(`story-version:${story.formatVer}`);
+        textCollector.push(`format-version:${story.formatVer}`);
     }
     if (story.tagColors && Object.keys(story.tagColors).length > 0) {
         textCollector.push(`tag-colors:${JSON.stringify(story.tagColors)}`);

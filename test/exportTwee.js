@@ -41,4 +41,10 @@ test('exportTwee', async (t) => {
     t.true(
         twee.includes('::StorySettings\nifid:some_unique_uuid')
     );
+    t.true(
+        twee.includes('story-format:SugarCube')
+    );
+    t.true(
+        twee.includes('format-version:2.28.2')
+    );
 });
