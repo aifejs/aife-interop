@@ -13,12 +13,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^1.2.1",
-    "babel-eslint": "^8.2.3",
-    "eslint": "^4.19.1",
+    "ava": "^2.3.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.3.0",
     "eslint-config-aifejs": "github:aifejs/eslint-config-aifejs"
   },
   "dependencies": {
-    "common-tags": "^1.4.0"
+    "common-tags": "^1.8.0"
   }
 }
