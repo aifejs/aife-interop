@@ -1,19 +1,7 @@
 'use strict';
 
 const {stripIndent,} = require('common-tags');
-
-/**
- * @param {IStory} story
- * @return {number}
- */
-function getStartingPid(story) {
-    const startingPassage = story.passages.find(({starting,}) => starting);
-    if (startingPassage) {
-        return startingPassage.pid;
-    } else {
-        return 1;
-    }
-}
+const {getStartingPid,} = require('./utils.js');
 
 /**
  * @param {string[]} tags

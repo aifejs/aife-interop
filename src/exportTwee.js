@@ -1,5 +1,7 @@
 'use strict';
 
+const {getStartingName,} = require('./utils.js');
+
 /**
  * @param {IStory} story
  * @return {string}
@@ -19,12 +21,12 @@ function exportTwee(story) {
  * @return {string}
  */
 function exportTweePassage(passage) {
-    let title = `::${passage.starting ? 'Start' : passage.title}`;
+    let title = `::${passage.title}`;
     if (passage.tags && passage.tags.length) {
         title += ` [${passage.tags.join(' ')}]`;
     }
 
-    if (passage.position) {
+    if (passage.position && Object.keys(passage.position).length > 0) {
         title += ` ${JSON.stringify(passage.position)}`;
     }
 
@@ -71,23 +73,28 @@ function exportTitle(story) {
  * @return {string}
  */
 function exportStorySettings(story) {
-    const textCollector = [];
+    const settings = {};
+
     if (story.ifid) {
-        textCollector.push(`ifid:${story.ifid}`);
+        settings.ifid = story.ifid;
     }
     if (story.format) {
-        textCollector.push(`story-format:${story.format}`);
+        settings.format = story.format;
     }
     if (story.formatVer) {
-        textCollector.push(`format-version:${story.formatVer}`);
+        settings['format-version'] = story.formatVer;
     }
     if (story.tagColors && Object.keys(story.tagColors).length > 0) {
-        textCollector.push(`tag-colors:${JSON.stringify(story.tagColors)}`);
+        settings['tag-colors'] = story.tagColors;
     }
+    if (story.zoom) {
+        settings.zoom = story.zoom;
+    }
+    settings.start = getStartingName(story);
 
     return exportTweePassage({
-        title: 'StorySettings',
-        text: textCollector.join('\n'),
+        title: 'StoryData',
+        text: JSON.stringify(settings, null, '    '),
     });
 }
 

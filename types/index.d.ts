@@ -3,6 +3,7 @@ interface IStoryMeta {
     format: string,
     formatVer: string;
     tagColors: object;
+    zoom: number;
 }
 
 interface IStory extends IStoryMeta {

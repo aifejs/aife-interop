@@ -34,6 +34,7 @@ function extractMetaFromStoryTitle(passage) {
 }
 
 /**
+ * @deprecated
  * @param {IPassage} passage
  * @return {IStoryMeta}
  */
@@ -71,6 +72,22 @@ function extractMetaFromStorySettings(passage) {
     return meta;
 }
 
+function extractMetaFromStoryData(passage) {
+    try {
+        const meta = JSON.parse(passage.text);
+        return {
+            ifid: meta.ifid,
+            format: meta.format,
+            formatVer: meta['format-version'],
+            tagColors: meta['tag-colors'] || {},
+            zoom: meta.zoom || 1,
+            starting: meta.start,
+        };
+    } catch (e) {
+        return {};
+    }
+}
+
 /**
  * @param {string} storyString
  * @return {Partial<IStory>}
@@ -86,6 +103,8 @@ function importTwee(storyString) {
                 Object.assign(storyProgress, extractMetaFromStoryTitle(passage));
             } else if (passage.title === 'StorySettings') {
                 Object.assign(storyProgress, extractMetaFromStorySettings(passage));
+            } else if (passage.title === 'StoryDate') {
+                Object.assign(storyProgress, extractMetaFromStoryData(passage));
             } else if (passage.tags.includes('stylesheet')) {
                 storyProgress.styleSheet += passage.text + '\n'; // eslint-disable-line prefer-template
             } else if (passage.tags.includes('script')) {
@@ -111,6 +130,20 @@ function importTwee(storyString) {
     story.styleSheet = story.styleSheet.trim();
     story.script = story.script.trim();
 
+    if (story.starting) {
+        story.passages.forEach((passage) => {
+            if (passage.title === story.starting) {
+                passage.starting = true;
+            }
+        });
+    } else {
+        story.passages.forEach((passage) => {
+            if (passage.title === 'Start') {
+                passage.starting = true;
+            }
+        });
+    }
+
     return story;
 }
 
@@ -124,10 +157,6 @@ function parsePassageString(passageString) {
 
     const {title, tags, meta,} = titleParser(titleLine);
     passage.text = text.join('\n').trim();
-
-    if (title === 'Start') {
-        passage.starting = true;
-    }
 
     let passageMeta = {};
     try {
