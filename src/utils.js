@@ -26,4 +26,4 @@ function getStartingName(story) {
 module.exports = {
     getStartingPid,
     getStartingName,
-}
+};
