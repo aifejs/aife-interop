@@ -63,7 +63,7 @@ function titleParser(stream) {
 
     return {
         title: title.replace(/^::\s*/, '').trim(),
-        tags: tags.trim(),
+        tags: tags.replace(/^\s*\[|]\s*$/mg, '').trim(),
         meta: meta.trim(),
     };
 }

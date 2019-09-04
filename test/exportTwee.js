@@ -34,7 +34,7 @@ test('exportTwee', async (t) => {
     t.truthy(twee);
     t.true(twee.includes('::Stylesheet [stylesheet]\na { color: red; }'));
     t.true(twee.includes('::Script [script]\nalert(123);'));
-    t.true(twee.includes('::Start [tag another-tag] <100,200>'));
+    t.true(twee.includes('::Start [tag another-tag] {"x":100,"y":200}'));
     t.true(
         twee.includes('::StoryTitle\nMy sad story')
     );

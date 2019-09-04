@@ -16,6 +16,8 @@ interface IStory extends IStoryMeta {
 interface IPassagePosition {
     x: number;
     y: number;
+    width?: number;
+    height?: number;
 }
 
 type PassagePid = number;

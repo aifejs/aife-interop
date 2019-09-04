@@ -25,7 +25,7 @@ function exportTweePassage(passage) {
     }
 
     if (passage.position) {
-        title += ` <${passage.position.x},${passage.position.y}>`;
+        title += ` ${JSON.stringify(passage.position)}`;
     }
 
     return title + '\n' + passage.text; // eslint-disable-line prefer-template

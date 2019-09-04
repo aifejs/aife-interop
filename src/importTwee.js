@@ -1,5 +1,7 @@
 'use strict';
 
+const {titleParser,} = require('./titleParser.js');
+
 /**
  * @deprecated
  * @param {IPassage} passage
@@ -117,48 +119,46 @@ function importTwee(storyString) {
  * @return Partial<IPassage>
  */
 function parsePassageString(passageString) {
-    const passage = {
-        tags: [],
-    };
-    let [titleLine, ...text] = passageString.split('\n');
+    const passage = {};
+    const [titleLine, ...text] = passageString.split('\n');
 
-    // since JS doesn't have character classes, it's hard to write regexp that covers
-    // unicode passage name and unicode tags, so we use replace with side-effects,
-    // gradually removing pieces until only title remains
-
-    titleLine = titleLine
-        .replace(/( <-?\d+(\.\d+)?,-?\d+(\.\d+)?>)/, (match) => {
-            const [x, y,] = match.replace(/(<|>)/, '').split(',').map(parseFloat);
-            passage.position = {
-                x,
-                y,
-            };
-
-            return '';
-        })
-        .trim();
-
-    titleLine = titleLine
-        .replace(/\[.*\]/, (match) => {
-            const tags = match.replace(/(\[|\])/g, '').split(/\s+/);
-            passage.tags.push(...tags);
-
-            return '';
-        })
-        .trim();
-
-    titleLine = titleLine
-        .replace(/^::/, '')
-        .trim();
-
-    passage.title = titleLine;
+    const {title, tags, meta,} = titleParser(titleLine);
     passage.text = text.join('\n').trim();
 
-    if (passage.title === 'Start') {
+    if (title === 'Start') {
         passage.starting = true;
     }
 
-    return passage;
+    let passageMeta = {};
+    try {
+        if (meta !== '') {
+            passageMeta = JSON.parse(meta);
+        }
+    } catch (e) {
+        console.error(`Malformed meta: "${titleLine}"`);
+    }
+
+    const {x, y, width, height, ...rest} = passageMeta;
+    const position = {
+        x,
+        y,
+    };
+
+    if (width !== undefined) {
+        position.width = width;
+    }
+    if (height !== undefined) {
+        position.height = height;
+    }
+
+    return {
+        title,
+        tags: tags.split(' '),
+        starting: title === 'Start',
+        position,
+        ...rest,
+        text: text.join('\n').trim(),
+    };
 }
 
 module.exports = {

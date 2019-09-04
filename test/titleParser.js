@@ -19,7 +19,7 @@ test('titleParser: simple', (t) => {
 test('titleParser: with tags', (t) => {
     const taggedTitle = titleParser(tagsFixture);
     t.is(taggedTitle.meta, '');
-    t.deepEqual(taggedTitle.tags, '[forest spooky]');
+    t.deepEqual(taggedTitle.tags, 'forest spooky');
     t.is(taggedTitle.title, 'An overgrown path');
 });
 
@@ -33,13 +33,13 @@ test('titleParser: with meta', (t) => {
 test('titleParser: with meta and tags', (t) => {
     const fullTitle = titleParser(fullFixture);
     t.is(fullTitle.meta, '{"position":"600,400","size":"100,200"}');
-    t.deepEqual(fullTitle.tags, '[forest spooky]');
+    t.deepEqual(fullTitle.tags, 'forest spooky');
     t.is(fullTitle.title, 'An overgrown path');
 });
 
 test('titleParser: with escape sequences', (t) => {
     const fullTitle = titleParser(escapedFixture);
     t.is(fullTitle.meta, '{"position":"600,400","size":"100,200"}');
-    t.deepEqual(fullTitle.tags, '[fo\\re[st] s{pook}y]');
+    t.deepEqual(fullTitle.tags, 'fo\\re[st] s{pook}y');
     t.is(fullTitle.title, 'A\\n [over{grown} path]');
 });

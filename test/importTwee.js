@@ -13,14 +13,14 @@ story-format:SugarCube
 format-version:2.28.2
 tag-colors:{"bookmark":"green"}
 
-::Start [start another-tag] <100,200>
+::Start [start another-tag] {"x":100,"y":200,"width":100,"height":100}
 
 My story begins when I was but a kid.
 It is a very long story, so bear with me.
 
 Actually, forget that. I'm tired.
 
-::Second passage <100.25,-100.55>
+::Second passage {"x":100.25,"y":-100.55}
 Mock passage
 
 ::Stylesheet [stylesheet]
@@ -45,13 +45,13 @@ test('importTwee', async (t) => {
     t.deepEqual(story.tagColors, {bookmark: 'green',});
 
     const passage1 = story.passages[0];
-    t.pass(passage1.starting);
-    t.pass(passage1.text.startsWith('My story'));
-    t.pass(passage1.text.endsWith('tired.'));
-    t.deepEqual(passage1.position, {x: 100, y: 200,});
+    t.true(passage1.starting);
+    t.true(passage1.text.startsWith('My story'));
+    t.true(passage1.text.endsWith('tired.'));
+    t.deepEqual(passage1.position, {x: 100, y: 200, width: 100, height: 100,});
 
     const passage2 = story.passages[1];
-    t.pass(!passage2.starting);
+    t.false(passage2.starting);
     t.is(passage2.text, 'Mock passage');
     t.deepEqual(passage2.position, {x: 100.25, y: -100.55,});
 
