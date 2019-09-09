@@ -27,7 +27,7 @@ function extractMetaFromStoryTitle(passage) {
     });
 
     if (Object.keys(meta).length > 1) {
-        console.warn('Using StoryTitle tags to pass metadata is deprecated, use StorySettings');
+        console.warn('Using StoryTitle tags to pass metadata is deprecated, use StoryData passage as per Twee 3 spec.');
     }
 
     return meta;
@@ -68,6 +68,10 @@ function extractMetaFromStorySettings(passage) {
 
         return acc;
     }, {});
+
+    if (Object.keys(meta).length > 1) {
+        console.warn('Using StorySettings to pass metadata is deprecated, use StoryData passage as per Twee 3 spec.');
+    }
 
     return meta;
 }
@@ -158,16 +162,7 @@ function parsePassageString(passageString) {
     const {title, tags, meta,} = titleParser(titleLine);
     passage.text = text.join('\n').trim();
 
-    let passageMeta = {};
-    try {
-        if (meta !== '') {
-            passageMeta = JSON.parse(meta);
-        }
-    } catch (e) {
-        console.error(`Malformed meta: "${titleLine}"`);
-    }
-
-    const {x, y, width, height, ...rest} = passageMeta;
+    const {x, y, width, height, ...rest} = meta;
     const position = {
         x,
         y,
@@ -182,11 +177,11 @@ function parsePassageString(passageString) {
 
     return {
         title,
-        tags: tags.split(' '),
+        tags,
         starting: title === 'Start',
         position,
-        ...rest,
         text: text.join('\n').trim(),
+        ...rest,
     };
 }
 

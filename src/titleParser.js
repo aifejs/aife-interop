@@ -3,9 +3,11 @@
 const MODE_TITLE = 'MODE_TITLE';
 const MODE_TAGS = 'MODE_TAGS';
 const MODE_META = 'MODE_META';
+const MODE_LEGACY_META = 'MODE_LEGACY_META';
 
 const mustEscape = '[]{}\\'.split('');
 const escapeStart = '\\';
+const isLegacyCoord = '1234567890.,-'.split('');
 
 function isEscaped(char) {
     return mustEscape.includes(char);
@@ -36,6 +38,8 @@ function titleParser(stream) {
                 mode = MODE_TAGS;
             } else if (char === '{') {
                 mode = MODE_META;
+            } else if (char === '<') {
+                mode = MODE_LEGACY_META;
             } else {
                 title += char;
                 pos++;
@@ -51,6 +55,8 @@ function titleParser(stream) {
                 pos++;
             } else if (char === '{') {
                 mode = MODE_META;
+            } else if (char === '<') {
+                mode = MODE_LEGACY_META;
             } else {
                 tags += char;
                 pos++;
@@ -58,14 +64,37 @@ function titleParser(stream) {
         } else if (mode === MODE_META) {
             meta += char;
             pos++;
+        } else if (mode === MODE_LEGACY_META) {
+            if (isLegacyCoord.includes(char)) {
+                meta += char;
+            }
+            pos++;
         }
     }
 
-    return {
+    const parsedTitle = {
         title: title.replace(/^::\s*/, '').trim(),
-        tags: tags.replace(/^\s*\[|]\s*$/mg, '').trim(),
-        meta: meta.trim(),
+        tags: tags.length ? tags.replace(/^\s*\[|]\s*$/mg, '').split(/\s+/g) : [],
     };
+
+    if (mode === MODE_LEGACY_META) {
+        const [x, y,] = meta.split(',').map(parseFloat);
+        parsedTitle.meta = {
+            x,
+            y,
+        };
+    } else if (mode === MODE_META) {
+        try {
+            parsedTitle.meta = JSON.parse(meta);
+        } catch (e) {
+            console.warn(`Malformed meta at passage "${stream}"`); // eslint-disable-line no-console
+            parsedTitle.meta = {};
+        }
+    } else {
+        parsedTitle.meta = {};
+    }
+
+    return parsedTitle;
 }
 
 module.exports = {
