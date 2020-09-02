@@ -1,39 +1,12 @@
 'use strict';
 
 const test = require('ava');
+const fs = require('fs');
 const {importTwee,} = require('../src/importTwee');
 
-const storyFixture = `
-::StoryTitle
-My sad story
-
-::StorySettings
-ifid:some_unique_uuid
-story-format:SugarCube
-format-version:2.28.2
-tag-colors:{"bookmark":"green"}
-
-::Start [start another-tag] {"x":100,"y":200,"width":100,"height":100}
-
-My story begins when I was but a kid.
-It is a very long story, so bear with me.
-
-Actually, forget that. I'm tired.
-
-::Second passage {"x":100.25,"y":-100.55}
-Mock passage
-
-::Stylesheet [stylesheet]
-
-a { color: red; }
-
-::Script [script]
-
-alert(123);
-`;
-
 test('importTwee', async (t) => {
-    const story = importTwee(storyFixture);
+    const storyFixture = fs.readFileSync('test/fixtures/importTwee.lf.twee');
+    const story = importTwee(storyFixture.toString());
 
     t.is(story.passages.length, 2);
     t.is(story.title, 'My sad story');
@@ -54,5 +27,18 @@ test('importTwee', async (t) => {
     t.false(passage2.starting);
     t.is(passage2.text, 'Mock passage');
     t.deepEqual(passage2.position, {x: 100.25, y: -100.55,});
+});
 
+test('importTwee/supports CRLF', async (t) => {
+    const crlf = fs.readFileSync('test/fixtures/importTwee.crlf.twee');
+    const lf = fs.readFileSync('test/fixtures/importTwee.lf.twee');
+    const crlfStory = importTwee(crlf.toString());
+    const lfStory = importTwee(lf.toString());
+
+    t.is(crlfStory.title, lfStory.title);
+    t.is(crlfStory.passages.length, lfStory.passages.length);
+    t.is(crlfStory.ifid, lfStory.ifid);
+    t.is(crlfStory.format, lfStory.format);
+    t.is(crlfStory.formatVer, lfStory.formatVer);
+    t.is(crlfStory.zoom, lfStory.zoom);
 });

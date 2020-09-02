@@ -97,7 +97,7 @@ function extractMetaFromStoryData(passage) {
  * @return {Partial<IStory>}
  */
 function importTwee(storyString) {
-    const passages = storyString.trim().split(/\n\n::/mg);
+    const passages = storyString.trim().split(/(?:\r?\n){2}::/mg);
 
     const story = passages.reduce(
         (/** {Partial<IStory>} */storyProgress, passageString, index) => {
@@ -107,7 +107,7 @@ function importTwee(storyString) {
                 Object.assign(storyProgress, extractMetaFromStoryTitle(passage));
             } else if (passage.title === 'StorySettings') {
                 Object.assign(storyProgress, extractMetaFromStorySettings(passage));
-            } else if (passage.title === 'StoryDate') {
+            } else if (passage.title === 'StoryData') {
                 Object.assign(storyProgress, extractMetaFromStoryData(passage));
             } else if (passage.tags.includes('stylesheet')) {
                 storyProgress.styleSheet += passage.text + '\n'; // eslint-disable-line prefer-template
