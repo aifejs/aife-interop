@@ -17,7 +17,7 @@
   "license": "MIT",
   "types": "./types/index.d.ts",
   "devDependencies": {
-    "ava": "^2.3.0",
+    "ava": "^5.2.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.3.0",
     "eslint-config-aifejs": "github:aifejs/eslint-config-aifejs"
